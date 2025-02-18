@@ -29,7 +29,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'curametric_wound_api',
-    'corsheaders'
+    'corsheaders',
+    'psycopg2',
+    'whitenoise.runserver_nostatic',
+    'gunicorn',
 ]
 
 REST_FRAMEWORK = {
