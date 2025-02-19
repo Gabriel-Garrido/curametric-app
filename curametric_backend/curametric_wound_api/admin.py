@@ -5,7 +5,7 @@ from .models import Patient, Wound, WoundCare
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'last_name', 'dob', 'created_at', 'updated_at', 'created_by', 'updated_by')
+    list_display = ('name', 'last_name', 'rut','dob', 'created_at', 'updated_at', 'created_by', 'updated_by')
     search_fields = ('name', 'last_name')
     list_filter = ('created_at', 'updated_at')
 

@@ -5,6 +5,7 @@ from datetime import date
 class Patient(models.Model):
     name = models.CharField(max_length=100, blank=False, null=False, default='no name')
     last_name = models.CharField(max_length=100, blank=False, null=False, default='no last name')
+    rut = models.CharField(max_length=12, blank=False, null=False, default='no rut')
     dob = models.DateField(default=date(1900, 1, 1), blank=False, null=False)
     cronic_diseases = models.JSONField(default=dict, blank=True, null=True)
     predispositions = models.JSONField(default=dict, blank=True, null=True)
