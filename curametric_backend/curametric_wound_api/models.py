@@ -3,11 +3,11 @@ from django.contrib.auth.models import User
 from datetime import date
 
 class Patient(models.Model):
-    name = models.CharField(max_length=100, blank=False, null=False, default='no name')
+    first_name = models.CharField(max_length=100, blank=False, null=False, default='no name')
     last_name = models.CharField(max_length=100, blank=False, null=False, default='no last name')
     rut = models.CharField(max_length=12, blank=False, null=False, default='no rut')
     dob = models.DateField(default=date(1900, 1, 1), blank=False, null=False)
-    cronic_diseases = models.JSONField(default=dict, blank=True, null=True)
+    chronic_diseases = models.JSONField(default=dict, blank=True, null=True)
     predispositions = models.JSONField(default=dict, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -15,7 +15,7 @@ class Patient(models.Model):
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='patients_updated')
 
     def __str__(self):
-        return f'{self.name} {self.last_name}'
+        return f'{self.first_name} {self.last_name}'
 
     class Meta:
         ordering = ['created_at']
@@ -33,7 +33,7 @@ class Wound(models.Model):
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wounds_updated')
 
     def __str__(self):
-        return f'{self.patient.name} {self.patient.last_name} - {self.wound_location}'
+        return f'{self.patient.first_name} {self.patient.last_name} - {self.wound_location}'
 
     class Meta:
         ordering = ['created_at']
@@ -63,7 +63,7 @@ class WoundCare(models.Model):
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wound_cares_updated')
 
     def __str__(self):
-        return f'{self.wound.patient.name} {self.wound.patient.last_name} - {self.wound.wound_location} - {self.care_date}'
+        return f'{self.wound.patient.first_name} {self.wound.patient.last_name} - {self.wound.wound_location} - {self.care_date}'
 
     class Meta:
         ordering = ['created_at']

@@ -19,10 +19,10 @@ class Migration(migrations.Migration):
             name='Patient',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(default='no name', max_length=100)),
+                ('first_name', models.CharField(default='no name', max_length=100)),
                 ('last_name', models.CharField(default='no last name', max_length=100)),
                 ('dob', models.DateField(default=datetime.date(1900, 1, 1))),
-                ('cronic_diseases', models.JSONField(blank=True, default=dict, null=True)),
+                ('chronic_diseases', models.JSONField(blank=True, default=dict, null=True)),
                 ('predispositions', models.JSONField(blank=True, default=dict, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
