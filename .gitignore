@@ -8,11 +8,13 @@ logs/
 *.log
 
 # Dependency directories
-backend/node_modules/
-frontend/node_modules/
+curametric_backend/node_modules/
+curametric-app/node_modules/
 
 # Environment variables
 .env
+curametric_backend/core/.env
+curametric-app/.env
 
 # Python
 *.pyc
@@ -27,6 +29,52 @@ env/
 .venv/
 .env/
 
+# Django
+curametric_backend/db.sqlite3
+curametric_backend/media/
+curametric_backend/staticfiles/
+
+# Expo
+curametric-app/.expo/
+curametric-app/dist/
+curametric-app/web-build/
+curametric-app/expo-env.d.ts
+curametric-app/.expo-shared/
+
+# Android/IntelliJ
+curametric-app/android/.gradle/
+curametric-app/android/local.properties
+curametric-app/android/.idea/
+curametric-app/android/*.iml
+curametric-app/android/*.hprof
+curametric-app/android/.cxx/
+curametric-app/android/build/
+
+# iOS
+curametric-app/ios/build/
+
+# Metro
+curametric-app/.metro-health-check*
+
+# Debug
+curametric-app/npm-debug.*
+curametric-app/yarn-debug.*
+curametric-app/yarn-error.*
+
+# macOS
+.DS_Store
+curametric-app/*.pem
+
+# Typescript
+curametric-app/*.tsbuildinfo
+
+# Build artifacts
+curametric-app/android/app/build/
+curametric-app/ios/build/
+
+# Miscellaneous
+curametric-app/app-example
+
 # IDEs and editors
 .vscode/
 .idea/
@@ -36,5 +84,4 @@ env/
 *.sln
 
 # OS generated files
-.DS_Store
 Thumbs.db
