@@ -134,7 +134,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 if not DEBUG:
-    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY', default=["curametric-app.onrender.com", "curametric.webcobra.cl", "localhost", "127.0.0.1"])
+    ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEPLOY')
 
     print("ALLOWED_HOSTS en producción:", ALLOWED_HOSTS)
     CORS_ORIGIN_WHITELIST = env.list('CORS_ORIGIN_WHITELIST_DEPLOY')
