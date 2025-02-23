@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from .views import UserViewSet, PatientViewSet, WoundViewSet, WoundCareViewSet
+from .views import UserViewSet, PatientViewSet, WoundViewSet, WoundCareViewSet, UserProfileView, UserCreateViewSet
 from .views import GoogleLoginView
 
 router = DefaultRouter()
@@ -15,4 +15,5 @@ urlpatterns = [
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path("google-login/", GoogleLoginView.as_view(), name="google_login"),
-    ]
+    path('users/create_user/', UserCreateViewSet.as_view({'post': 'create_user'}), name='create_user'),
+]

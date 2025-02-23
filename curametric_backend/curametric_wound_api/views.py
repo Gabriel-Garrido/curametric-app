@@ -1,7 +1,7 @@
 from rest_framework import viewsets, permissions
 from .models import Patient, Wound, WoundCare
 from django.contrib.auth.models import User
-from .serializers import UserSerializer, PatientSerializer, WoundSerializer, WoundCareSerializer
+from .serializers import UserSerializer, PatientSerializer, WoundSerializer, WoundCareSerializer, UserCreateSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -41,7 +41,7 @@ class GoogleLoginView(APIView):
         except Exception as e:
             print("Error al validar el token:", str(e))
             return Response({"error": "Token inválido"}, status=400)
-
+        
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -52,6 +52,22 @@ class UserViewSet(viewsets.ModelViewSet):
         user = request.user
         serializer = self.get_serializer(user)
         return Response(serializer.data)
+
+class UserCreateViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.filter(id=self.request.user.id)
+
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    def create_user(self, request):
+        serializer = UserCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response(UserCreateSerializer(user).data)
+        return Response(serializer.errors, status=400)
      
 
 class PatientViewSet(viewsets.ModelViewSet):
@@ -82,8 +98,6 @@ class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        # El usuario autenticado llega en request.user,
-        # independientemente de si entró con Google o credenciales propias.
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
