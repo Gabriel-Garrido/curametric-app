@@ -145,8 +145,8 @@ if not DEBUG:
     
 else:
     ALLOWED_HOSTS = env.list('ALLOWED_HOSTS_DEV')
-    CORS_ORIGIN_WHITELIST = ['http://localhost:8081']
-    CSRF_TRUSTED_ORIGINS = ['http://localhost:8081']
+    CORS_ORIGIN_WHITELIST = ['http://localhost:8081', 'http://localhost:19006']
+    CSRF_TRUSTED_ORIGINS = ['http://localhost:8081', 'http://localhost:19006']
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',

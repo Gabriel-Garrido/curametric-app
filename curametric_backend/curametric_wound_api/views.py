@@ -52,6 +52,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user = request.user
         serializer = self.get_serializer(user)
         return Response(serializer.data)
+     
 
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
