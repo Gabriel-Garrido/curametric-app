@@ -58,8 +58,6 @@ export default function AddWoundCare() {
   const [secondaryDressing, setSecondaryDressing] = useState("");
   const [nextCareDate, setNextCareDate] = useState(new Date());
   const [careNotes, setCareNotes] = useState("");
-
-  // Nuevos estados para los campos adicionales
   const [pain, setPain] = useState("");
   const [skinProtection, setSkinProtection] = useState("");
   const [cleaningSolution, setCleaningSolution] = useState("");
@@ -200,7 +198,6 @@ export default function AddWoundCare() {
       secondary_dressing: secondaryDressing,
       next_care_date: nextCareDate.toISOString().split("T")[0],
       care_notes: careNotes,
-      // Nuevos campos
       wound_pain: pain,
       skin_protection: skinProtection,
       wound_cleaning_solution: cleaningSolution,

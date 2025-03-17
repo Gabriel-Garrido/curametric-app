@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from datetime import date, datetime
 import logging
 from .ftp_utils import upload_to_ftp
+import os
+
 
 logger = logging.getLogger(__name__)
 
@@ -78,8 +80,9 @@ class WoundCare(models.Model):
     def save(self, *args, **kwargs):
         try:
             if self.wound_photo and not self.wound_photo.name.startswith('http'):
-                filename = self.wound_photo.name.replace(" ", "_")
-                subfolder = f"wound_photos/patient_{self.wound.patient.id}/wound_{self.wound.id}/wound_care_photo_{datetime.now().strftime('%Y%m%d')}"
+                extension = os.path.splitext(self.wound_photo.name)[1]
+                filename = f"wound_care_photo_{datetime.now().strftime('%Y%m%d')}{extension}"
+                subfolder = f"wound_photos/patient_{self.wound.patient.id}/wound_{self.wound.id}"
                 file_url = upload_to_ftp(self.wound_photo, filename, subfolder)
                 if file_url:
                     self.wound_photo = file_url

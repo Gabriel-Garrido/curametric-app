@@ -38,6 +38,7 @@ export default function HomeScreen() {
       wound_location: string;
     };
     created_at: string;
+    wound_photo: string;
   }
 
   const BACKEND_URL = process.env.EXPO_PUBLIC_BACKEND_URL;
@@ -157,12 +158,18 @@ export default function HomeScreen() {
                       style={styles.woundCareItem}
                       onPress={() => { router.push(`/patient/${item.id}/`) }}
                     >
-                      <Text style={styles.woundCareText}>
-                        {item.woundData.patientData.first_name} {item.woundData.patientData.last_name} - {item.woundData.wound_location}
-                      </Text>
-                      <Text style={styles.woundCareDate}>
-                        {new Date(item.created_at).toLocaleDateString("es-ES")}
-                      </Text>
+                      <Image
+                        source={{ uri: item.wound_photo }}
+                        style={styles.woundCareImage}
+                      />
+                      <View style={styles.woundCareTextContainer}>
+                        <Text style={styles.woundCareText}>
+                          {item.woundData.patientData.first_name} {item.woundData.patientData.last_name} - {item.woundData.wound_location}
+                        </Text>
+                        <Text style={styles.woundCareDate}>
+                          {new Date(item.created_at).toLocaleDateString("es-ES")}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                   )}
                 />
@@ -253,6 +260,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderGray,
     marginBottom: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  woundCareImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  woundCareTextContainer: {
+    flex: 1,
   },
   woundCareText: {
     fontSize: 16,
