@@ -36,11 +36,11 @@ INSTALLED_APPS = [
 ]
 
 # Configuración FTP para HostGator (o tu servidor)
-FTP_HOST = "ftp.webcobra.cl"
-FTP_USER = "curametric@curametric.webcobra.cl"
-FTP_PASS = "Gabrocode.43"
-FTP_MEDIA_PATH = "/media/"
-FTP_BASE_URL = "https://curametric.webcobra.cl/curametric/media/"
+FTP_HOST = env('FTP_HOST')
+FTP_USER = env('FTP_USER')
+FTP_PASS = env('FTP_PASS')
+FTP_MEDIA_PATH = env('FTP_MEDIA_PATH')
+FTP_BASE_URL = env('FTP_BASE_URL')
 
 DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
 FTP_STORAGE_LOCATION = f'ftp://{FTP_USER}:{FTP_PASS}@{FTP_HOST}{FTP_MEDIA_PATH}'
