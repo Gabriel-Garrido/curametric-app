@@ -25,3 +25,4 @@ sqlparse==0.5.3
 tzdata==2025.1
 urllib3==2.3.0
 whitenoise==6.9.0
+django-storages==1.14.5
