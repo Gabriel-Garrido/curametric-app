@@ -31,7 +31,19 @@ INSTALLED_APPS = [
     'psycopg2',
     'whitenoise.runserver_nostatic',
     'gunicorn',
+    'storages',
+    
 ]
+
+# Configuración FTP para HostGator (o tu servidor)
+FTP_HOST = "ftp.webcobra.cl"
+FTP_USER = "curametric@curametric.webcobra.cl"
+FTP_PASS = "Gabrocode.43"
+FTP_MEDIA_PATH = "/media/"
+FTP_BASE_URL = "https://curametric.webcobra.cl/curametric/media/"
+
+DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+FTP_STORAGE_LOCATION = f'ftp://{FTP_USER}:{FTP_PASS}@{FTP_HOST}{FTP_MEDIA_PATH}'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -44,10 +56,11 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# Configuración de archivos estáticos y media
+MEDIA_URL = FTP_BASE_URL
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 

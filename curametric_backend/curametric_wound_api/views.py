@@ -1,4 +1,5 @@
 from rest_framework import viewsets, permissions
+from rest_framework.permissions import IsAuthenticated
 from .models import Patient, Wound, WoundCare
 from django.contrib.auth.models import User
 from .serializers import UserSerializer, PatientSerializer, WoundSerializer, WoundCareSerializer, UserCreateSerializer
@@ -56,10 +57,12 @@ class UserViewSet(viewsets.ModelViewSet):
 class UserCreateViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserCreateSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get_queryset(self):
-        return User.objects.filter(id=self.request.user.id)
+        if self.request.user.is_authenticated:
+            return User.objects.filter(id=self.request.user.id)
+        return User.objects.none()
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def create_user(self, request):
@@ -68,7 +71,6 @@ class UserCreateViewSet(viewsets.ModelViewSet):
             user = serializer.save()
             return Response(UserCreateSerializer(user).data)
         return Response(serializer.errors, status=400)
-     
 
 class PatientViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
@@ -81,10 +83,13 @@ class PatientViewSet(viewsets.ModelViewSet):
 class WoundViewSet(viewsets.ModelViewSet):
     queryset = Wound.objects.all()
     serializer_class = WoundSerializer
-    permission_classes = [permissions.IsAuthenticated]
-    
+    permission_classes = [IsAuthenticated]
+
     def get_queryset(self):
         return Wound.objects.filter(created_by=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(created_by=self.request.user, updated_by=self.request.user)
 
 class WoundCareViewSet(viewsets.ModelViewSet):
     queryset = WoundCare.objects.all()
@@ -92,7 +97,19 @@ class WoundCareViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     
     def get_queryset(self):
-        return WoundCare.objects.filter(created_by=self.request.user)
+        queryset = WoundCare.objects.filter(created_by=self.request.user)
+        wound_id = self.request.query_params.get('wound', None)
+        if wound_id is not None:
+            queryset = queryset.filter(wound_id=wound_id)
+        return queryset
+    
+    def perform_create(self, serializer):
+        try:
+            serializer.save(created_by=self.request.user, updated_by=self.request.user)
+        except Exception as e:
+            print(f"Error al guardar WoundCare: {e}")
+            raise e
+    
 
 class UserProfileView(APIView):
     permission_classes = [IsAuthenticated]

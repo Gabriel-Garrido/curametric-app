@@ -8,11 +8,15 @@ class PatientSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class WoundSerializer(serializers.ModelSerializer):
+    patientData = PatientSerializer(read_only=True ,source='patient')
+    
     class Meta:
         model = Wound
         fields = '__all__'
 
 class WoundCareSerializer(serializers.ModelSerializer):
+    woundData = WoundSerializer(read_only=True ,source='wound')
+
     class Meta:
         model = WoundCare
         fields = '__all__'
