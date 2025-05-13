@@ -118,3 +118,38 @@ class UserProfileView(APIView):
         user = request.user
         serializer = UserSerializer(user)
         return Response(serializer.data)
+
+from rest_framework import status
+from curametric_backend.upload import upload_file
+
+class UploadWoundPhotoView(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            # Obtener el archivo de la solicitud
+            wound_care_id = request.data.get('wound_care_id')
+            file = request.FILES.get('file')
+
+            if not wound_care_id or not file:
+                return Response({"error": "Faltan parámetros obligatorios."}, status=status.HTTP_400_BAD_REQUEST)
+
+            # Obtener el WoundCare correspondiente
+            wound_care = WoundCare.objects.get(id=wound_care_id)
+
+            # Subir el archivo al FTP
+            extension = os.path.splitext(file.name)[1]
+            filename = f"wound_care_photo_{wound_care_id}{extension}"
+            subfolder = f"wound_photos/patient_{wound_care.wound.patient.id}/wound_{wound_care.wound.id}"
+            file_url = upload_file(file, filename, subfolder)
+
+            if not file_url:
+                return Response({"error": "Error al subir la imagen al servidor FTP."}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            # Guardar la URL en el modelo
+            wound_care.wound_photo = file_url
+            wound_care.save()
+
+            return Response({"message": "Imagen subida correctamente.", "url": file_url}, status=status.HTTP_200_OK)
+        except WoundCare.DoesNotExist:
+            return Response({"error": "WoundCare no encontrado."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

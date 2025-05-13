@@ -43,16 +43,22 @@ export default function LoginScreen() {
     iosClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS,
     scopes: ["profile", "email"],
     responseType: "id_token",
+    redirectUri: Platform.select({
+      web: `${window.location.origin}/`,
+      default: "curametric://redirect",
+    }),
   });
 
   useEffect(() => {
     if (isAuthenticated && user && token) {
+      console.log("User is authenticated, navigating to tabs");
       router.push("/(tabs)");
     }
   }, [isAuthenticated, user, token]);
 
   useEffect(() => {
     if (response?.type === "success") {
+      console.log("Google login response received:", response);
       const idToken = response.params?.id_token;
       if (idToken) handleGoogleLogin(idToken);
       else console.error("No se recibió un ID Token");
@@ -60,15 +66,18 @@ export default function LoginScreen() {
   }, [response]);
 
   const handleGoogleLogin = async (googleToken: string) => {
+    console.log("Handling Google login with token:", googleToken);
     setLoading(true);
     setError(null);
     try {
       const res = await axios.post(`${BACKEND_URL}/api/google-login/`, {
         token: googleToken,
       });
+      console.log("Google login successful, response:", res.data);
       const userRes = await axios.get(`${BACKEND_URL}/api/users/me/`, {
         headers: { Authorization: `Bearer ${res.data.jwt}` },
       });
+      console.log("User data fetched successfully:", userRes.data);
       dispatch(loginSuccess({ token: res.data.jwt, user: userRes.data }));
     } catch (error) {
       console.error("Error de autenticación:", error);
@@ -79,6 +88,7 @@ export default function LoginScreen() {
   };
 
   const handleManualLogin = async () => {
+    console.log("Handling manual login with email:", email);
     setLoading(true);
     setError(null);
     try {
@@ -86,9 +96,11 @@ export default function LoginScreen() {
         username: email,
         password: password,
       });
+      console.log("Manual login successful, response:", res.data);
       const userRes = await axios.get(`${BACKEND_URL}/api/users/me/`, {
         headers: { Authorization: `Bearer ${res.data.access}` },
       });
+      console.log("User data fetched successfully:", userRes.data);
       dispatch(loginSuccess({ token: res.data.access, user: userRes.data }));
     } catch (error) {
       console.error("Error de autenticación:", error);

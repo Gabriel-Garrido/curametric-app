@@ -1,8 +1,14 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from .views import UserViewSet, PatientViewSet, WoundViewSet, WoundCareViewSet, UserProfileView, UserCreateViewSet
-from .views import GoogleLoginView
+from .views import (
+    UserViewSet,
+    PatientViewSet,
+    WoundViewSet,
+    WoundCareViewSet,
+    UserProfileView,
+    UserCreateViewSet,
+    UploadWoundPhotoView,
+)
 
 router = DefaultRouter()
 router.register(r'users', UserViewSet)
@@ -13,9 +19,6 @@ router.register(r'woundcares', WoundCareViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path("google-login/", GoogleLoginView.as_view(), name="google_login"),
-    path('token/verify/', TokenVerifyView.as_view(), name='token_verify'),
-
+    path('upload-wound-photo/', UploadWoundPhotoView.as_view(), name='upload-wound-photo'),
+    path('profile/', UserProfileView.as_view(), name='user-profile'),
 ]

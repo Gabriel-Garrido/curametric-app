@@ -34,7 +34,9 @@ export default function AddWoundCare() {
   const { id, woundId } = useLocalSearchParams();
   const token = useSelector((state: any) => state.auth.token);
   const user = useSelector((state: any) => state.auth.user);
-  const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
+  const isAuthenticated = useSelector(
+    (state: any) => state.auth.isAuthenticated
+  );
 
   // Secciones del formulario
   const [currentSection, setCurrentSection] = useState(0);
@@ -78,23 +80,23 @@ export default function AddWoundCare() {
     exudateType: null,
   });
 
-    useEffect(() => {
-      const verifyToken = async () => {
-        if (!isAuthenticated || !user || !token) {
-          dispatch(logout());
-          router.replace("/login/LoginScreen");
-        }
-        try {
-          await checkToken(dispatch);
-        } catch (error) {
-          console.error("Error verifying token:", error);
-          dispatch(logout());
-        } finally {
-          setLoading(false);
-        }
-      };
-      verifyToken();
-    }, []);
+  useEffect(() => {
+    const verifyToken = async () => {
+      if (!isAuthenticated || !user || !token) {
+        dispatch(logout());
+        router.replace("/login/LoginScreen");
+      }
+      try {
+        await checkToken(dispatch);
+      } catch (error) {
+        console.error("Error verifying token:", error);
+        dispatch(logout());
+      } finally {
+        setLoading(false);
+      }
+    };
+    verifyToken();
+  }, []);
 
   // Validaciones
   const isNumeric = (value: string) => /^\d+(\.\d+)?$/.test(value);
@@ -123,9 +125,11 @@ export default function AddWoundCare() {
         if (!validateField(depth, "depth", true)) valid = false;
         break;
       case 1: // Sección TissueSection
-        if (!validateField(granulationTissue, "granulationTissue", true)) valid = false;
+        if (!validateField(granulationTissue, "granulationTissue", true))
+          valid = false;
         if (!validateField(slough, "slough", true)) valid = false;
-        if (!validateField(necroticTissue, "necroticTissue", true)) valid = false;
+        if (!validateField(necroticTissue, "necroticTissue", true))
+          valid = false;
         // Checar que no exceda 100%
         const totalTissue =
           parseFloat(granulationTissue || "0") +
@@ -201,20 +205,49 @@ export default function AddWoundCare() {
       wound_pain: pain,
       skin_protection: skinProtection,
       wound_cleaning_solution: cleaningSolution,
-      wound_photo: woundPhoto,
       created_by: user?.id,
       updated_by: user?.id,
     };
 
     try {
-      await axios.post(`${process.env.EXPO_PUBLIC_BACKEND_URL}/api/woundcares/`, woundCareData, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      // Guardar los datos de la curación
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/woundcares/`,
+        woundCareData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const woundCareId = response.data.id;
+
+      // Subir la imagen si existe
+      if (woundPhoto) {
+        const formData = new FormData();
+        formData.append("wound_care_id", woundCareId);
+
+        const response = await fetch(woundPhoto);
+        const blob = await response.blob();
+        formData.append("file", blob, "wound_photo.jpg");
+
+        await axios.post(
+          `${process.env.EXPO_PUBLIC_BACKEND_URL}/api/upload-wound-photo/`,
+          formData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+      }
+
       setLoading(false);
-      Alert.alert("Éxito", "Curación agregada.");
+      Alert.alert("Éxito", "Curación agregada correctamente.");
       router.push(`/patient/${id}/History`);
-    } catch {
+    } catch (err) {
       setLoading(false);
+      console.error("Error al guardar la curación:", err);
       setError("No se pudo guardar la curación. Intenta nuevamente.");
     }
   };
@@ -239,7 +272,9 @@ export default function AddWoundCare() {
 
           {/* Barra de progreso */}
           <View style={styles.progressBarContainer}>
-            <View style={[styles.progressBarFill, { width: `${progressPercent}%` }]} />
+            <View
+              style={[styles.progressBarFill, { width: `${progressPercent}%` }]}
+            />
             <Text style={styles.progressText}>
               {`Sección ${currentSection + 1} de ${TOTAL_SECTIONS}`}
             </Text>
@@ -298,7 +333,6 @@ export default function AddWoundCare() {
               setNextCareDate={setNextCareDate}
               careNotes={careNotes}
               setCareNotes={setCareNotes}
-
               // Pasamos los nuevos estados
               woundPain={pain}
               setWoundPain={setPain}
@@ -311,7 +345,9 @@ export default function AddWoundCare() {
             />
           )}
 
-          {error && <ErrorComponent errorMessage={error} onRetry={handleRetry} />}
+          {error && (
+            <ErrorComponent errorMessage={error} onRetry={handleRetry} />
+          )}
 
           {/* Mostrar IaSection solo si estamos en la última sección */}
           {currentSection === 3 && (

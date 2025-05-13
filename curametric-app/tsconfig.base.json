@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["dom", "es2017"],
+    "allowJs": true,
+    "jsx": "react-native",
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["curametric-app/components/*"],
+      "@utils/*": ["curametric-app/utils/*"],
+      "@redux/*": ["curametric-app/redux/*"],
+      "@constant/*": ["curametric-app/constant/*"]
+    }
+  },
+  "include": ["curametric-app/**/*"],
+  "exclude": ["node_modules", "curametric_backend"]
+}
