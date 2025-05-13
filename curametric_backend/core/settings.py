@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'gunicorn',
     'storages',
-    'curametric_wound_api',
 ]
 
 # Configuración FTP para HostGator (o tu servidor)
