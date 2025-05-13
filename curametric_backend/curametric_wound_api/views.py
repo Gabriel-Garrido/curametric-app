@@ -16,7 +16,7 @@ from rest_framework.decorators import action
 env = environ.Env()
 environ.Env.read_env()
 
-from ..upload import upload_file
+from curametric_backend.upload import upload_file
 
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID_WEB")
 
