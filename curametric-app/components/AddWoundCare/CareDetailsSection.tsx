@@ -1,9 +1,6 @@
-//// --------------------------------------
-//// CareDetailsSection.tsx
-//// --------------------------------------
-// filepath: /c:/Users/gabri/Desktop/Programación/Proyectos/Proyecto CuraMetric/curametric-app/components/AddWoundCare/CareDetailsSection.tsx
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Platform, Alert } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import PickerComponent from "../PickerComponent";
 import DateField from "../DateField";
 import Colors from "../../constant/Colors";
@@ -115,6 +112,43 @@ export default function CareDetailsSection({
   const [primaryCategory, setPrimaryCategory] = useState("");
   const [secondaryCategory, setSecondaryCategory] = useState("");
 
+  const handlePickImage = async () => {
+    if (Platform.OS !== "web") {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permiso requerido", "Se necesita acceso a la galería para adjuntar fotos.");
+        return;
+      }
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.7,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      setWoundPhoto(result.assets[0].uri);
+    }
+  };
+
+  const handleTakePhoto = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permiso requerido", "Se necesita acceso a la cámara para tomar fotos.");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      allowsEditing: true,
+      quality: 0.7,
+    });
+
+    if (!result.canceled && result.assets.length > 0) {
+      setWoundPhoto(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Detalles de la Curación</Text>
@@ -224,14 +258,26 @@ export default function CareDetailsSection({
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>URL/Nota de Foto</Text>
-        <TextInput
-          style={styles.input}
-          value={woundPhoto}
-          onChangeText={setWoundPhoto}
-          placeholder="Ingresa URL o referencia de foto"
-          placeholderTextColor={Colors.neutralGray}
-        />
+        <Text style={styles.label}>Foto de la herida</Text>
+        {woundPhoto ? (
+          <View>
+            <Image source={{ uri: woundPhoto }} style={styles.photoPreview} resizeMode="cover" />
+            <TouchableOpacity style={styles.photoRemoveBtn} onPress={() => setWoundPhoto("")}>
+              <Text style={styles.photoRemoveBtnText}>Quitar foto</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.photoButtonsRow}>
+            <TouchableOpacity style={[styles.photoBtn, styles.photoBtnLeft]} onPress={handlePickImage}>
+              <Text style={styles.photoBtnText}>Galería</Text>
+            </TouchableOpacity>
+            {Platform.OS !== "web" && (
+              <TouchableOpacity style={[styles.photoBtn, styles.photoBtnRight]} onPress={handleTakePhoto}>
+                <Text style={styles.photoBtnText}>Cámara</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        )}
       </View>
 
       {/* Notas finales */}
@@ -292,5 +338,43 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     flex: 1,
+  },
+  photoButtonsRow: {
+    flexDirection: "row",
+  },
+  photoBtn: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: "center",
+    backgroundColor: Colors.primaryBlue,
+    borderRadius: 5,
+  },
+  photoBtnLeft: {
+    marginRight: 5,
+  },
+  photoBtnRight: {
+    marginLeft: 5,
+  },
+  photoBtnText: {
+    color: Colors.neutralWhite,
+    fontWeight: "600",
+    fontSize: 14,
+  },
+  photoPreview: {
+    width: "100%",
+    height: 200,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  photoRemoveBtn: {
+    alignItems: "center",
+    paddingVertical: 8,
+    backgroundColor: "#e53935",
+    borderRadius: 5,
+  },
+  photoRemoveBtnText: {
+    color: Colors.neutralWhite,
+    fontWeight: "600",
+    fontSize: 14,
   },
 });
