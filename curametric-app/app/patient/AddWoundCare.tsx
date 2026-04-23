@@ -184,8 +184,8 @@ export default function AddWoundCare() {
     setError(null);
 
     const woundCareData = {
-      patient: id,
       wound: woundId,
+      care_date: new Date().toISOString().split("T")[0],
       width: parseFloat(width),
       height: parseFloat(height),
       depth: parseFloat(depth),

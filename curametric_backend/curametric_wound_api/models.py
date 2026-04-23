@@ -49,7 +49,7 @@ class Wound(models.Model):
 class WoundCare(models.Model):
     wound = models.ForeignKey(Wound, on_delete=models.CASCADE)
     care_date = models.DateField(default=date(1900, 1, 1), blank=False, null=False)
-    wound_heigh = models.FloatField(default=0, blank=False, null=False)
+    wound_height = models.FloatField(default=0, blank=False, null=False)
     wound_width = models.FloatField(default=0, blank=False, null=False)
     wound_depth = models.FloatField(default=0, blank=False, null=False)
     wound_necrotic_tissue = models.FloatField(default=0, blank=False, null=False)
@@ -62,7 +62,8 @@ class WoundCare(models.Model):
     wound_pain = models.TextField(default='(-)', blank=True, null=True)
     surrounding_skin = models.TextField(default='', blank=False, null=False)
     wound_primary_dressing = models.TextField(default='no primary dressing', blank=False, null=False)
-    wound_secondary_dressing = models.JSONField(default=dict, blank=True, null=True)
+    wound_secondary_dressing = models.TextField(default='', blank=True, null=True)
+    wound_borders = models.TextField(default='', blank=True, null=True)
     skin_protection = models.TextField(default='no skin protection', blank=False, null=False)
     wound_cleaning_solution = models.TextField(default='no cleaning solution', blank=False, null=False)
     wound_next_care = models.DateField(default=date(1900, 1, 1), blank=False, null=False)
